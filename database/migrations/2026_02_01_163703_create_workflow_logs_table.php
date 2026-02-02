@@ -10,14 +10,11 @@ return new class extends Migration
     {
         Schema::create('workflow_logs', function (Blueprint $table) {
             $table->id();
-
             $table->foreignId('workflow_run_id')
                   ->constrained()
                   ->cascadeOnDelete();
-
             $table->string('status');      // info, success, failed
             $table->text('message');       // log message
-
             $table->timestamps();
         });
     }
