@@ -11,6 +11,7 @@ class WorkflowTrigger extends Model
     protected $fillable = [
         'workflow_id',
         'event_name',
+        'config',
     ];
 
     /* ==========================
