@@ -41,6 +41,7 @@ class HandleWorkflowTrigger
         WorkflowLog::create([
             'workflow_run_id' => $run->id,
             'message' => "Workflow started by trigger: {$trigger->id}",
+             'status' => 'Success',
             'created_at' => now(),
         ]);
 
