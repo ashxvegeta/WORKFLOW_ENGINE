@@ -13,10 +13,9 @@ class WorkflowCondition extends Model
         'operator',
         'value',
     ];
-    // Relationship to Workflow
+
     public function workflow()
     {
         return $this->belongsTo(Workflow::class);
     }
-
 }
