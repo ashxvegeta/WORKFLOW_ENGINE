@@ -8,6 +8,7 @@ use App\Models\WorkflowTrigger;
 use App\Models\WorkflowRun;
 use App\Models\WorkflowLog;
 use App\Events\OrderCreated;
+use App\Services\ConditionEvaluator;
 
 class HandleWorkflowTrigger
 {
@@ -38,6 +39,22 @@ class HandleWorkflowTrigger
             'context' => $data,
             'started_at' => now(),
         ]);
+
+         // 👇 NEW: check conditions
+        $conditions = $trigger->workflow->conditions;
+        
+        if(!ConditionEvaluator::evaluate($conditions, $data)){
+            $run->update(['status' => 'skipped']);
+                WorkflowLog::create([
+                    'workflow_run_id' => $run->id,
+                    'message' => "Workflow skipped due to unmet conditions",
+                    'status' => 'Skipped',
+                    'created_at' => now(),
+                ]);
+            // stop here if conditions are not met
+            return;
+        }
+
         WorkflowLog::create([
             'workflow_run_id' => $run->id,
             'message' => "Workflow started by trigger: {$trigger->id}",
