@@ -29,7 +29,7 @@ class Workflow extends Model
         return $this->hasMany(WorkflowTrigger::class);
     } 
 
-    //n  Workflow → hasMany → Conditions
+    //now this function Workflow → hasMany → Conditions
     public  function  conditions():HasMany
     {
         return $this->hasMany(WorkflowCondition::class);
