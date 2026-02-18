@@ -21,6 +21,7 @@ class WorkflowAction extends Model
         'sequence' => 'integer',
     ];
 
+    // WorkflowAction MODEL
     public function workflow(): BelongsTo
     {
         return $this->belongsTo(Workflow::class);

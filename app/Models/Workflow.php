@@ -34,7 +34,7 @@ class Workflow extends Model
     {
         return $this->hasMany(WorkflowCondition::class);
     }
-
+    // STEP 3️⃣ Link Actions to Workflow
     public function  actions():HasMany
     {
         return $this->hasMany(WorkflowAction::class)->orderBy('sequence');

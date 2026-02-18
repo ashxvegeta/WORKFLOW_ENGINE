@@ -9,6 +9,7 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+    // STEP 1️⃣ workflow_actions TABLE
     public function up(): void
     {
         Schema::create('workflow_actions', function (Blueprint $table) {

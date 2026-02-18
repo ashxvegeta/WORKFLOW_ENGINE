@@ -9,6 +9,8 @@ use App\Models\WorkflowRun;
 use App\Models\WorkflowLog;
 use App\Events\OrderCreated;
 use App\Services\ConditionEvaluator;
+use App\Services\ActionExecutor;
+use Illuminate\Support\Facades\Log;
 
 class HandleWorkflowTrigger
 {
@@ -22,6 +24,7 @@ class HandleWorkflowTrigger
      */
     public function handle(object $event): void
     {
+        Log::info('OrderCreated event received', $event->data);
         $triggers = WorkflowTrigger::where('event_name','order_created')
         ->whereHas('workflow', function ($query) {
             $query->where('is_active', true);
@@ -61,6 +64,9 @@ class HandleWorkflowTrigger
              'status' => 'Success',
             'created_at' => now(),
         ]);
+
+         // 3️⃣ RUN ACTIONS ✅
+        ActionExecutor::execute($run);
 
     }
 }
