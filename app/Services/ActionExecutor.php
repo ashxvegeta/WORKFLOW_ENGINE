@@ -4,6 +4,8 @@ namespace App\Services;
 use Illuminate\Support\Facades\Log;
 use App\Models\WorkflowRun;
 use App\Models\WorkflowLog;
+use App\Mail\WorkflowActionMail;
+use Illuminate\Support\Facades\Mail;
 
 class ActionExecutor
 {
@@ -71,12 +73,24 @@ class ActionExecutor
     }
 
 
-    private static function email(WorkflowRun $run, $action)
+    private static function email(WorkflowRun $run, $action): void
     {
+        $payload = $action->payload;
+
+        if (empty($payload['to'])) {
+            throw new \Exception('Email action missing "to" address');
+        }
+
+        $subject = $payload['subject'] ?? 'Workflow Notification';
+        $body    = $payload['body'] ?? 'No content provided';
+
+        Mail::to($payload['to'])
+            ->send(new WorkflowActionMail($subject, $body));
+
         WorkflowLog::create([
             'workflow_run_id' => $run->id,
             'status' => 'info',
-            'message' => 'Email action executed (mock)',
+            'message' => "Email sent to {$payload['to']}",
         ]);
     }
 
