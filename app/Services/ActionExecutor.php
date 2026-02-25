@@ -75,6 +75,7 @@ class ActionExecutor
 
     private static function email(WorkflowRun $run, $action): void
     {
+        
         $payload = $action->payload;
 
         if (empty($payload['to'])) {
