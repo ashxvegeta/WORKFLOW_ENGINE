@@ -11,6 +11,7 @@ use App\Events\OrderCreated;
 use App\Services\ConditionEvaluator;
 use App\Services\ActionExecutor;
 use Illuminate\Support\Facades\Log;
+use App\Jobs\ExecuteWorkflowJob;
 
 class HandleWorkflowTrigger
 {
@@ -66,7 +67,7 @@ class HandleWorkflowTrigger
         ]);
 
          // 3️⃣ RUN ACTIONS ✅
-        ActionExecutor::execute($run);
+        ExecuteWorkflowJob::dispatch($run);
 
     }
 }
