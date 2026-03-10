@@ -6,7 +6,7 @@ use App\Models\WorkflowRun;
 use App\Models\WorkflowLog;
 use App\Mail\WorkflowActionMail;
 use Illuminate\Support\Facades\Mail;
-
+use App\Services\TemplateParser;
 class ActionExecutor
 {
     public static function execute(WorkflowRun $run): void
@@ -67,7 +67,10 @@ class ActionExecutor
         WorkflowLog::create([ 
             'workflow_run_id' => $run->id, 
              'status' => 'info',
-            'message' => $action->payload['message'] ?? 'No message provided', 
+            'message' => TemplateParser::parse(
+                $action->payload['message'] ?? 'No message provided',
+                $run->context
+            ),
         ]); 
             
     }
@@ -75,15 +78,23 @@ class ActionExecutor
 
     private static function email(WorkflowRun $run, $action): void
     {
-        
         $payload = $action->payload;
 
         if (empty($payload['to'])) {
             throw new \Exception('Email action missing "to" address');
         }
 
-        $subject = $payload['subject'] ?? 'Workflow Notification';
-        $body    = $payload['body'] ?? 'No content provided';
+        $context = $run->context;
+
+        $subject = TemplateParser::parse(
+            $payload['subject'] ?? 'Workflow Notification',
+            $context
+        );
+
+        $body = TemplateParser::parse(
+            $payload['body'] ?? 'No content provided',
+            $context
+        );
 
         Mail::to($payload['to'])
             ->send(new WorkflowActionMail($subject, $body));
